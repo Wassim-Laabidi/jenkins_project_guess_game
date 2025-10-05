@@ -1,8 +1,8 @@
 pipeline {
   agent any
   environment {
-    DOCKERHUB_CREDENTIALS = 'docker-hub-credentials' // replace with your Jenkins credentials ID
-    DOCKER_IMAGE = "${env.DOCKERHUB_USER ?: 'yourhubuser'}/jenkins-python-game"
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
+    DOCKER_IMAGE = "${env.DOCKERHUB_CREDENTIALS_USR}/jenkins-python-game"
   }
 
   stages {
