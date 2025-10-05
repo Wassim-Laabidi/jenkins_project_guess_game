@@ -12,13 +12,6 @@ pipeline {
       }
     }
 
-    stage('Run tests') {
-      steps {
-        sh 'python -m pip install -r requirements.txt'
-        sh 'pytest -q'
-      }
-    }
-
     stage('Build Docker image') {
       steps {
         script {
@@ -27,6 +20,14 @@ pipeline {
           sh "docker build -t ${img} ."
           sh "docker tag ${img} ${env.DOCKER_IMAGE}:latest"
           env.IMAGE = img
+        }
+      }
+    }
+
+    stage('Run tests') {
+      steps {
+        script {
+          sh "docker run --rm ${env.IMAGE} python -m pytest tests/ -v"
         }
       }
     }
