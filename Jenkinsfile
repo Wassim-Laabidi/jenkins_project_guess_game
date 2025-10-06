@@ -1,5 +1,10 @@
 pipeline {
     agent any
+    
+    triggers {
+        githubPush()
+    }
+    
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub-credentials')
         DOCKER_IMAGE = "${env.DOCKERHUB_CREDENTIALS_USR}/jenkins-python-game"
