@@ -24,15 +24,21 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: env.DOCKERHUB_CREDENTIALS, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh "docker push $IMAGE"
+                    sh "docker push ${env.IMAGE}"
                     sh "docker push ${env.DOCKER_IMAGE}:latest"
                 }
             }
         }
     }
     post {
-        always { archiveArtifacts artifacts: 'README.md', fingerprint: true }
+        always {
+            script {
+                if (fileExists('README.md')) {
+                    archiveArtifacts artifacts: 'README.md', fingerprint: true
+                }
+            }
+        }
     }
 }
